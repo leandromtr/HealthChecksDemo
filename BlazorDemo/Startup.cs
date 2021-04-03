@@ -1,17 +1,20 @@
-using BlazorDemo.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BlazorDemo.Data;
+using HealthChecks.UI.Client;
 
-namespace BlazorDemo
+namespace HealthChecksDemo
 {
     public class Startup
     {
@@ -28,6 +31,16 @@ namespace BlazorDemo
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+
+            // Configure Health Check 
+            services.AddHealthChecks()
+                .AddCheck("Foo Service", () => HealthCheckResult.Healthy("The check of the foo service worked."), new[] { "service" })
+                .AddCheck("Bar Service", () => HealthCheckResult.Healthy("The check of the bar service worked."), new[] { "service" })
+                .AddCheck("Database", () => HealthCheckResult.Healthy("The check of the Database worked."), new[] { "database", "sql" });
+
+
+
+
             services.AddSingleton<WeatherForecastService>();
         }
 
@@ -52,6 +65,21 @@ namespace BlazorDemo
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHealthChecks("/quickhealth", new HealthCheckOptions()
+                {
+                    Predicate = _ => false
+                });
+
+                endpoints.MapHealthChecks("/health/services", new HealthCheckOptions()
+                {
+                    Predicate = reg => reg.Tags.Contains("service"),
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });
+
+                endpoints.MapHealthChecks("/health", new HealthCheckOptions()
+                {
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
