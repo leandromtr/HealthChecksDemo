@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BlazorDemo.Data;
 using HealthChecks.UI.Client;
+using BlazorDemo.HealthChecks;
 
 namespace HealthChecksDemo
 {
@@ -34,10 +35,12 @@ namespace HealthChecksDemo
 
             // Configure Health Check 
             services.AddHealthChecks()
-                .AddCheck("Foo Service", () => HealthCheckResult.Healthy("The check of the foo service worked."), new[] { "service" })
-                .AddCheck("Bar Service", () => HealthCheckResult.Healthy("The check of the bar service worked."), new[] { "service" })
+                //.AddCheck("Foo Service", () => HealthCheckResult.Healthy("The check of the foo service worked."), new[] { "service" })
+                //.AddCheck("Bar Service", () => HealthCheckResult.Healthy("The check of the bar service worked."), new[] { "service" })
+                .AddCheck<ResponseTimeHealthCheck>("Network speed test", null, new[] { "database", "sql" })
                 .AddCheck("Database", () => HealthCheckResult.Healthy("The check of the Database worked."), new[] { "database", "sql" });
 
+            services.AddSingleton<ResponseTimeHealthCheck>();
             services.AddSingleton<WeatherForecastService>();
         }
 
