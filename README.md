@@ -1,4 +1,4 @@
-# MinimalApi - Demo
+# HealthChecks - Demo
 <ul>
 <li>
 <b>Description:</b> Example of the project to check if different apps of your project are healthy and their respective status.
@@ -21,7 +21,7 @@
   </ul>
 </li>
 <li>
-<b>Reference:</b> <a href="https://www.youtube.com/watch?v=aXayqUfSNvw">Intro to Health Checks in .NET Core</a>  
+<b>Reference:</b> <a href="https://www.youtube.com/watch?v=Kbfto6Y2xdw">Intro to Health Checks in .NET Core</a>  
 </li>
 <li>
 <b>Nuget Packages:</b> AspNetCore.HealthChecks.UI, AspNetCore.HealthChecks.UI.Client</a>  
